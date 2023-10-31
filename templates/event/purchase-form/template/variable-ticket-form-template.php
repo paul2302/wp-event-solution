@@ -61,6 +61,10 @@ if(class_exists('WooCommerce') && 'woocommerce' === $sells_engine) {
 		$ticket_variation        = get_post_meta( $single_event_id, "etn_ticket_variations", true );
 		$etn_ticket_availability = get_post_meta( $single_event_id, "etn_ticket_availability", true );
 
+		$total_tickets_sold = Helper::get_ticket_variations_info($single_event_id, $ticket_variation)['etn_total_tickets_sold'];
+		$total_tickets_avaiilable = absint( get_post_meta( $single_event_id, 'etn_total_avaiilable_tickets', true));
+		$total_tickets_left = $total_tickets_avaiilable - $total_tickets_sold;
+
 		if ( is_array( $ticket_variation ) && count( $ticket_variation ) > 0 ) {
 			$cart_ticket = [];
 			if ( class_exists( 'Woocommerce' ) && ! is_admin() ) {
@@ -84,13 +88,15 @@ if(class_exists('WooCommerce') && 'woocommerce' === $sells_engine) {
 			}
 			$number = ! empty( $i ) ? $i : 0;
 			?>
-            <div class="variations_<?php echo intval( $number ); ?>">
+            <div class="variations_<?php echo intval( $number ); ?>" 
+			data-etn_total_tickets_available="<?php echo($total_tickets_avaiilable - $total_tickets_sold); ?>"
+			data-etn_total_ticket_error_message="<?php echo esc_attr__( "You can only select $total_tickets_left ticket(s) in total. More are not available.", "eventin" ); ?>">
                 <input type="hidden" name="variation_picked_total_qty" value="0" class="variation_picked_total_qty"/>
 				<?php foreach ( $ticket_variation as $key => $value ) {
 					$total_tickets = absint( $value['etn_avaiilable_tickets'] );
 					if ( $total_tickets > 0 ) {
 						$etn_min_ticket = ! empty( $value['etn_min_ticket'] ) ? absint( $value['etn_min_ticket'] ) : 0;
-						$etn_max_ticket = ! empty( $value['etn_max_ticket'] ) ? absint( $value['etn_max_ticket'] ) : 0;
+						$etn_max_ticket = min(! empty( $value['etn_max_ticket'] ) ? absint( $value['etn_max_ticket'] ) : 0, $total_tickets_avaiilable);
 						$sold_tickets   = absint( $value['etn_sold_tickets'] );
 
 						$etn_cart_limit = 0;
@@ -98,7 +104,7 @@ if(class_exists('WooCommerce') && 'woocommerce' === $sells_engine) {
 							$etn_cart_limit = ! empty( $cart_ticket[ $value['etn_ticket_slug'] ] ) ? $cart_ticket[ $value['etn_ticket_slug'] ] : 0;
 						}
 
-						$etn_current_stock = absint( $total_tickets - $sold_tickets );
+						$etn_current_stock = min(absint( $total_tickets - $sold_tickets ), $total_tickets_avaiilable);
 						$stock_outClass    = ( $etn_current_stock === 0 ) ? 'stock_out' : '';
 						?>
                         <div class="variation_<?php esc_attr_e( $key ) ?>">

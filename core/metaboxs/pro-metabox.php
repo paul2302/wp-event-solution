@@ -557,7 +557,14 @@ class Pro_metabox extends Event_manager_metabox {
         if ( $etn_show_min_max_text ) {
             $etn_avaiilable_tickets = !empty( absint( $ticket_variation['etn_avaiilable_tickets'] ) ) ? absint( $ticket_variation['etn_avaiilable_tickets'] ) : 100000;
             $etn_sold_tickets       = absint( $ticket_variation['etn_sold_tickets'] );
-            $remaining_ticket       = $etn_avaiilable_tickets - $etn_sold_tickets;
+			
+			$ticket_variations = get_post_meta( $single_event_id, 'etn_ticket_variations', true);
+			$total_tickets_sold = Helper::get_ticket_variations_info($single_event_id, $ticket_variations)['etn_total_tickets_sold'];
+			$total_tickets_avaiilable = absint( get_post_meta( $single_event_id, 'etn_total_avaiilable_tickets', true));
+
+			$remaining_total_tickets = $total_tickets_avaiilable - $total_tickets_sold;
+            $remaining_ticket       = min( ($etn_avaiilable_tickets - $etn_sold_tickets), $remaining_total_tickets );
+			
 
             if ( $remaining_ticket > 0 ) {
                 $etn_min_ticket = !empty( absint( $ticket_variation['etn_min_ticket'] ) ) ? absint( $ticket_variation['etn_min_ticket'] ) : 1;

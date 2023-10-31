@@ -3548,6 +3548,7 @@ class Helper {
 	 */
 	public static function get_ticket_variations_info( $event_id = null, $ticket_variations = [], $from_multivendor = false ) {
 		$etn_total_created_tickets = 0;
+		$etn_total_tickets_sold = 0;
 
 		foreach ( $ticket_variations as $key => &$value ) {
 			// will optimize
@@ -3572,6 +3573,7 @@ class Helper {
 				$etn_avaiilable_tickets          = ! empty( absint( $value['etn_avaiilable_tickets'] ) ) ? absint( $value['etn_avaiilable_tickets'] ) : 100000;
 				$value['etn_avaiilable_tickets'] = $etn_avaiilable_tickets;
 				$etn_total_created_tickets       += $etn_avaiilable_tickets;
+				$etn_total_tickets_sold 		 += absint($value['etn_sold_tickets']);
 
 				$etn_min_ticket = ! empty( $value['etn_min_ticket'] ) ? absint( $value['etn_min_ticket'] ) : 0;
 				$etn_max_ticket = ! empty( $value['etn_max_ticket'] ) ? absint( $value['etn_max_ticket'] ) : $etn_avaiilable_tickets;
@@ -3603,6 +3605,7 @@ class Helper {
 		return [
 			'ticket_variations'         => $ticket_variations,
 			'etn_total_created_tickets' => $etn_total_created_tickets,
+			'etn_total_tickets_sold' => $etn_total_tickets_sold
 		];
 	}
 

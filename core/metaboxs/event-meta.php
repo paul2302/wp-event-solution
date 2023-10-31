@@ -279,6 +279,32 @@ class Event_meta extends Event_manager_metabox {
             'conditional'  => true,
             'condition-id' => 'etn_avaiilable_tickets',
         ];
+		$event_ticket_fields['etn_total_ticket_availability'] = [
+            'label'        => esc_html__( 'Limit Total Tickets', 'eventin' ),
+            'desc'         => esc_html__( 'Enable limited total tickets. Set ticket stock in the next input.', "eventin" ),
+            'type'         => 'checkbox',
+            'left_choice'  => 'limited',
+            'right_choice' => 'unlimited',
+            'attr'         => ['class' => 'etn-label-item etn-limit-event-ticket' ,'tab' => 'ticket_pricing'],
+            'data'         => [
+                'limit_info'=> esc_html__("If you choose limited total ticket but do not set the ticket stock, then '100,000' will be used as default ticket stock count. You can update the total ticket stock option below at any time.","eventin") ,
+            ],
+            'conditional'  => true,
+            'condition-id' => 'etn_total_ticket_availability',
+        ];
+		$event_ticket_fields['etn_total_avaiilable_tickets'] = [
+            'label'    => esc_html__( 'Combined ticket stock', 'eventin' ),
+			'type'     => 'number',
+			'default'  => '',
+			'value'    => '',
+			'desc'     => esc_html__( 'Total number of tickets for all tickets combined.', 'eventin' ),
+			'priority' => 1,
+			'placeholder' => esc_html__( '100,000', 'eventin' ),
+			'required' => true,
+            'attr'         => ['class' => 'etn-label-item etn-limit-event-ticket' ,'tab' => 'ticket_pricing'],
+            'conditional'  => true,
+            'condition-id' => 'etn_total_avaiilable_tickets',
+        ];
         
         $event_ticket_fields['etn_ticket_variations'] = [
             'label'    => esc_html__( 'Ticket Variation', 'eventin' ),
