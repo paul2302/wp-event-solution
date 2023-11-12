@@ -1,6 +1,7 @@
 <?php
 
 do_action( 'etn_before_add_to_cart_form', $single_event_id );
+use Etn\Utils\Helper;
 
 $sells_engine="";
 if ( class_exists('Wpeventin_Pro') ) {
