@@ -561,6 +561,19 @@ function etn_ticket_quantity_update($, $scope) {
         });
     });
 
+    function getAllSelectedTickets() {
+        var selected_tickets_count = 0;
+        var variation_div = $(".variation_" + 0);;
+        var variation_counter = 1
+
+        while (variation_div.length > 0) {
+            selected_tickets_count += parseInt(variation_div.find(".ticket_" + (variation_counter-1).toString()).val());
+            variation_div = $(".variation_" + variation_counter);
+            variation_counter += 1;
+        }
+        return selected_tickets_count;
+    }
+
     /**
      * Get price, quantity
      * @param {*} $this 
@@ -579,10 +592,14 @@ function etn_ticket_quantity_update($, $scope) {
         var etn_cart_limit_message = ticket_div.data("etn_cart_limit_message");
         var message_div = $this.find(".show_message_" + key);
         var current_input = ticket_div.val();
+        var variations_div = $(".variations_0");
+        const total_tickets_left = parseInt(variations_div.data("etn_total_tickets_available"));
 
         if (etn_current_stock < etn_max_ticket) {
             etn_max_ticket = etn_current_stock;
         }
+
+        const selected_tickets_count = getAllSelectedTickets();
 
         $this.parents(".etn-single-ticket-item").next(".show_message").html("");
 
@@ -600,12 +617,18 @@ function etn_ticket_quantity_update($, $scope) {
         } else {
             message_div.html("");
         }
+        
+        var qty_message = current_this.siblings('.ticket_' + key).data("qty_message");
+
+        if (selected_tickets_count > total_tickets_left) {
+            ticket_div.val(ticket_div.val()-1);
+            message_div.html(variations_div.data("etn_total_ticket_error_message"));
+            return;
+        }        
 
         if (etn_max_ticket == 0 || (etn_min_ticket == 0 && etn_max_ticket == 0)) {
             return;
         }
-
-        var qty_message = current_this.siblings('.ticket_' + key).data("qty_message");
 
         // checking min,max validation
         if ((current_input >= etn_min_ticket) && (current_input <= etn_max_ticket)) {
@@ -632,7 +655,7 @@ function etn_ticket_quantity_update($, $scope) {
      */
     function ticket_price_cal($this, single_ticket, variations) {
 
-        const pricing_form = $('.etn-event-form-parent.etn-ticket-variation')
+        const pricing_form = $('.etn-event-form-parent')
         let decimal_number_points = pricing_form.data('decimal-number-points');
         let thousand_separator = pricing_form.data('thousand-separator');
         let decimal_separator = pricing_form.data('decimal-separator');

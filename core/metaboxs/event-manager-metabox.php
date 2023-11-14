@@ -335,7 +335,11 @@ abstract class Event_manager_metabox extends Event_manager_repeater_metabox {
                         $etn_rep_key               = $ticket_variations_info['ticket_variations'];
                         $etn_total_created_tickets = $ticket_variations_info['etn_total_created_tickets'];
 
-                        update_post_meta( get_the_ID(), "etn_total_avaiilable_tickets", $etn_total_created_tickets );
+                        if ($post["etn_total_ticket_availability"] == "yes") {
+                            update_post_meta( get_the_ID(), "etn_total_avaiilable_tickets", $post["etn_total_avaiilable_tickets"] );
+                        } else {
+                            update_post_meta( get_the_ID(), "etn_total_avaiilable_tickets", $etn_total_created_tickets );
+                        }
 
                         update_post_meta( get_the_ID(), "_price", 0 );
                         update_post_meta( get_the_ID(), "_regular_price", 0 );
